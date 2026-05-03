@@ -1,0 +1,618 @@
+/* ============================================================
+   ROBCO TERMINAL v0.1 — Stylesheet
+   ============================================================ */
+
+@font-face {
+  font-family: 'Monofonto';
+  src: local('Courier New'), local('Consolas');
+}
+
+:root {
+  --term-green: #4aff4a;
+  --term-green-dim: #2a8a2a;
+  --term-green-bright: #88ff88;
+  --term-bg: #050a05;
+  --term-bg-deep: #020502;
+  --bezel-color: #4a4a3a;
+  --bezel-shadow: #1a1a14;
+  --bezel-highlight: #6a6a55;
+  --metal-dark: #2a2a22;
+  --screw-color: #3a3a32;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  background: #1a1a1a;
+  color: var(--term-green);
+  font-family: 'Courier New', 'Consolas', monospace;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* ============================================================
+   MODE TOGGLE BUTTONS (top-right)
+   ============================================================ */
+.mode-toggle {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 1000;
+  display: flex;
+  gap: 4px;
+}
+.mode-toggle button {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid var(--term-green-dim);
+  color: var(--term-green-dim);
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  padding: 4px 8px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: all 0.15s;
+}
+.mode-toggle button:hover {
+  background: rgba(74, 255, 74, 0.1);
+  color: var(--term-green);
+  border-color: var(--term-green);
+}
+.mode-toggle button.active {
+  color: var(--term-green);
+  border-color: var(--term-green);
+  box-shadow: 0 0 4px rgba(74, 255, 74, 0.4);
+}
+
+/* ============================================================
+   TERMINAL CONTAINER — modes
+   ============================================================ */
+#terminal-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* BEZEL MODE: terminal sits inside a chunky frame, centered */
+#terminal-container.bezel-mode {
+  background:
+    radial-gradient(ellipse at center, #2a2a25 0%, #0a0a08 100%);
+  padding: 20px;
+}
+
+/* FULLSCREEN MODE: screen fills entire viewport, no bezel */
+#terminal-container.fullscreen-mode {
+  background: var(--term-bg);
+  padding: 0;
+}
+#terminal-container.fullscreen-mode #bezel {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+#terminal-container.fullscreen-mode .bezel-top,
+#terminal-container.fullscreen-mode .bezel-bottom,
+#terminal-container.fullscreen-mode .screw {
+  display: none;
+}
+#terminal-container.fullscreen-mode #screen {
+  border-radius: 0;
+  border: none;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+}
+
+/* ============================================================
+   BEZEL — the chunky physical terminal frame
+   ============================================================ */
+.bezel {
+  position: relative;
+  background:
+    linear-gradient(180deg, var(--bezel-highlight) 0%, var(--bezel-color) 8%, var(--bezel-color) 92%, var(--bezel-shadow) 100%),
+    var(--bezel-color);
+  border: 3px solid var(--bezel-shadow);
+  border-radius: 18px;
+  padding: 36px 28px 56px 28px;
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.1),
+    inset 0 -2px 8px rgba(0, 0, 0, 0.4),
+    0 8px 30px rgba(0, 0, 0, 0.7),
+    0 0 0 6px var(--metal-dark),
+    0 0 0 8px var(--bezel-shadow);
+  width: 92vw;
+  max-width: 900px;
+  height: 80vh;
+  max-height: 700px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Top bezel detail — vents */
+.bezel-top {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+}
+.bezel-vent {
+  width: 30px;
+  height: 4px;
+  background: var(--bezel-shadow);
+  border-radius: 2px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+/* Mounting screws at corners */
+.screw {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background:
+    radial-gradient(circle, var(--bezel-highlight) 30%, var(--screw-color) 70%);
+  border: 1px solid var(--bezel-shadow);
+  border-radius: 50%;
+  box-shadow: inset -1px -1px 2px rgba(0, 0, 0, 0.5);
+}
+.screw::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 1px;
+  right: 1px;
+  height: 1.5px;
+  background: var(--bezel-shadow);
+  transform: translateY(-50%) rotate(45deg);
+}
+.screw-tl { top: 8px;     left: 8px; }
+.screw-tr { top: 8px;     right: 8px; }
+.screw-bl { bottom: 8px;  left: 8px; }
+.screw-br { bottom: 8px;  right: 8px; }
+
+/* Bottom bezel — brand label and knobs */
+.bezel-bottom {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.bezel-label {
+  color: var(--bezel-shadow);
+  font-size: 11px;
+  letter-spacing: 3px;
+  font-weight: bold;
+  text-shadow: 0 1px 0 var(--bezel-highlight);
+}
+.bezel-knobs {
+  display: flex;
+  gap: 8px;
+}
+.knob {
+  width: 14px;
+  height: 14px;
+  background:
+    radial-gradient(circle, var(--bezel-highlight) 0%, var(--screw-color) 80%);
+  border: 1px solid var(--bezel-shadow);
+  border-radius: 50%;
+  box-shadow:
+    inset -2px -2px 3px rgba(0, 0, 0, 0.5),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================================
+   SCREEN — the green CRT display
+   ============================================================ */
+.screen {
+  position: relative;
+  flex: 1;
+  background: var(--term-bg);
+  border: 2px solid var(--term-bg-deep);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow:
+    inset 0 0 60px rgba(74, 255, 74, 0.05),
+    inset 0 0 0 2px var(--bezel-shadow);
+
+  /* Subtle CRT curvature illusion */
+  background:
+    radial-gradient(ellipse at center,
+      var(--term-bg) 0%,
+      var(--term-bg-deep) 100%);
+}
+
+.screen-content {
+  position: relative;
+  padding: 24px 24px 8px 24px;
+  height: 100%;
+  overflow-y: auto;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--term-green);
+  text-shadow:
+    0 0 2px rgba(74, 255, 74, 0.5),
+    0 0 8px rgba(74, 255, 74, 0.3);
+  z-index: 2;
+}
+
+/* Hide scrollbar visually, keep functionality */
+.screen-content::-webkit-scrollbar {
+  width: 6px;
+}
+.screen-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.screen-content::-webkit-scrollbar-thumb {
+  background: rgba(74, 255, 74, 0.2);
+  border-radius: 3px;
+}
+
+/* ============================================================
+   CRT EFFECTS — scanlines, vignette, flicker
+   ============================================================ */
+.crt-scanlines {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0) 0px,
+    rgba(0, 0, 0, 0) 2px,
+    rgba(0, 0, 0, 0.15) 2px,
+    rgba(0, 0, 0, 0.15) 3px
+  );
+  pointer-events: none;
+  z-index: 3;
+}
+
+.crt-vignette {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0) 60%,
+    rgba(0, 0, 0, 0.5) 100%
+  );
+  pointer-events: none;
+  z-index: 4;
+}
+
+.crt-flicker {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(74, 255, 74, 0.02);
+  pointer-events: none;
+  z-index: 5;
+  animation: flicker 0.15s infinite;
+}
+
+@keyframes flicker {
+  0%   { opacity: 0.3; }
+  50%  { opacity: 0.4; }
+  100% { opacity: 0.3; }
+}
+
+/* ============================================================
+   TERMINAL TEXT STYLES
+   ============================================================ */
+.line {
+  margin-bottom: 2px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.line-bright {
+  color: var(--term-green-bright);
+  text-shadow:
+    0 0 4px rgba(136, 255, 136, 0.7),
+    0 0 12px rgba(136, 255, 136, 0.4);
+}
+
+.line-dim {
+  color: var(--term-green-dim);
+  opacity: 0.85;
+}
+
+.line-error {
+  color: #ff4040;
+  text-shadow:
+    0 0 4px rgba(255, 64, 64, 0.6),
+    0 0 12px rgba(255, 64, 64, 0.3);
+}
+
+.line-warning {
+  color: #ffaa00;
+}
+
+.line-input {
+  color: var(--term-green-bright);
+}
+
+.line-input::before {
+  content: '> ';
+}
+
+/* ============================================================
+   PROMPT AREA — input row at bottom of terminal
+   ============================================================ */
+.prompt-area {
+  position: relative;
+  padding: 8px 24px 16px 24px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  color: var(--term-green);
+  text-shadow:
+    0 0 2px rgba(74, 255, 74, 0.5),
+    0 0 8px rgba(74, 255, 74, 0.3);
+  z-index: 6;
+}
+
+.prompt-prefix {
+  color: var(--term-green-bright);
+}
+
+.prompt-path {
+  color: var(--term-green-dim);
+}
+
+.prompt-arrow {
+  color: var(--term-green-bright);
+  margin-right: 4px;
+}
+
+.terminal-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--term-green-bright);
+  font-family: 'Courier New', 'Consolas', monospace;
+  font-size: 14px;
+  flex: 1;
+  caret-color: transparent; /* Hide the real cursor, we have a fake █ */
+  text-shadow:
+    0 0 2px rgba(136, 255, 136, 0.7),
+    0 0 8px rgba(136, 255, 136, 0.3);
+}
+
+/* Re-enable text selection inside input */
+.terminal-input {
+  user-select: text;
+}
+
+.cursor {
+  color: var(--term-green-bright);
+  animation: blink 1s steps(1) infinite;
+  margin-left: -8px; /* Slightly overlap the input's invisible caret */
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* ============================================================
+   BOOT SEQUENCE STYLES
+   ============================================================ */
+.boot-line {
+  font-family: 'Courier New', monospace;
+}
+
+.boot-pause {
+  display: inline-block;
+  height: 0.5em;
+}
+
+/* ============================================================
+   FILE LISTING / CONTENT STYLES
+   ============================================================ */
+.file-listing {
+  font-family: 'Courier New', monospace;
+}
+
+.file-row {
+  display: flex;
+  gap: 16px;
+  padding: 1px 0;
+}
+
+.file-icon {
+  width: 24px;
+  color: var(--term-green-dim);
+}
+
+.file-name {
+  flex: 1;
+}
+
+.file-size {
+  color: var(--term-green-dim);
+  text-align: right;
+  width: 80px;
+}
+
+.file-content-header {
+  border-bottom: 1px solid var(--term-green-dim);
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+  color: var(--term-green-bright);
+}
+
+.file-content-footer {
+  border-top: 1px solid var(--term-green-dim);
+  padding-top: 4px;
+  margin-top: 8px;
+  color: var(--term-green-dim);
+  font-size: 12px;
+}
+
+/* ============================================================
+   HACK PUZZLE STYLES
+   ============================================================ */
+
+.hack-header {
+  font-family: 'Courier New', monospace;
+  margin-bottom: 8px;
+  color: var(--term-green-bright);
+  text-shadow:
+    0 0 4px rgba(136, 255, 136, 0.7),
+    0 0 12px rgba(136, 255, 136, 0.4);
+  line-height: 1.4;
+}
+
+.hack-attempts {
+  color: var(--term-green-bright);
+  font-weight: bold;
+}
+
+.hack-body {
+  font-family: 'Courier New', 'Consolas', monospace;
+  line-height: 1.45;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+  white-space: pre;
+}
+
+.hack-row {
+  white-space: pre;
+}
+
+.hack-addr {
+  color: var(--term-green-dim);
+  user-select: none;
+}
+
+.hack-line {
+  color: var(--term-green);
+  white-space: pre;
+}
+
+.hack-word {
+  color: var(--term-green);
+  cursor: pointer;
+  padding: 0;
+  display: inline;
+  transition: all 0.05s;
+}
+
+/* Word-level hover: applied via JS mouseenter on the parent .hack-word */
+.hack-word.hover {
+  background: rgba(74, 255, 74, 0.18);
+  color: var(--term-green-bright);
+  text-shadow:
+    0 0 4px rgba(136, 255, 136, 0.7),
+    0 0 12px rgba(136, 255, 136, 0.5);
+}
+
+/* Per-letter hover: each individual letter span lights up brighter */
+.hack-letter:hover {
+  background: var(--term-green-bright);
+  color: var(--term-bg);
+  text-shadow: none;
+  box-shadow: 0 0 6px rgba(136, 255, 136, 0.7);
+}
+
+.hack-bracket {
+  color: var(--term-green-dim);
+  cursor: pointer;
+  display: inline;
+  transition: all 0.05s;
+}
+
+/* Bracket-level hover: applied via JS mouseenter */
+.hack-bracket.hover {
+  background: rgba(74, 255, 74, 0.12);
+  color: var(--term-green);
+}
+
+/* Per-character hover inside bracket pairs */
+.hack-bracket-char:hover {
+  background: var(--term-green-dim);
+  color: var(--term-bg);
+  text-shadow: none;
+}
+
+.hack-history {
+  margin-top: 16px;
+  border-left: 2px solid var(--term-green-dim);
+  padding-left: 12px;
+  font-family: 'Courier New', monospace;
+  color: var(--term-green-dim);
+  line-height: 1.5;
+}
+
+.hack-history-title {
+  color: var(--term-green-bright);
+  margin-bottom: 4px;
+}
+
+.hack-history-empty {
+  font-style: italic;
+  opacity: 0.6;
+}
+
+.hack-flash {
+  margin-top: 8px;
+  padding: 6px 12px;
+  background: rgba(74, 255, 74, 0.1);
+  border-left: 2px solid var(--term-green-bright);
+  color: var(--term-green-bright);
+  font-weight: bold;
+  font-family: 'Courier New', monospace;
+  text-shadow:
+    0 0 4px rgba(136, 255, 136, 0.7);
+  animation: flash-fade 2s ease-out;
+}
+
+@keyframes flash-fade {
+  0%   { opacity: 0; transform: translateY(-4px); }
+  10%  { opacity: 1; transform: translateY(0); }
+  80%  { opacity: 1; }
+  100% { opacity: 0.3; }
+}
+
+.hack-hint {
+  margin-top: 12px;
+  font-size: 11px;
+  color: var(--term-green-dim);
+  font-style: italic;
+  opacity: 0.7;
+}
+@media (max-width: 600px) {
+  .bezel {
+    width: 96vw;
+    height: 90vh;
+    padding: 28px 16px 44px 16px;
+    border-radius: 12px;
+  }
+  .screen-content {
+    padding: 12px;
+    font-size: 12px;
+  }
+  .terminal-input {
+    font-size: 12px;
+  }
+  .prompt-area {
+    padding: 6px 12px 12px 12px;
+    font-size: 12px;
+  }
+  .bezel-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+  }
+}

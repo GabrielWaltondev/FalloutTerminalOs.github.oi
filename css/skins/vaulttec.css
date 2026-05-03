@@ -1,0 +1,48 @@
+/* ============================================================
+   SKIN: VAULT-TEC TERMINAL
+   ============================================================ */
+
+body.skin-vaulttec {
+  --term-green: #5cffc1;          /* cooler, slightly cyan-tinted green */
+  --term-green-dim: #2a8a6a;
+  --term-green-bright: #88ffd4;
+  --term-bg: #051a14;
+  --term-bg-deep: #021008;
+  --bezel-color: #3a4a4a;
+  --bezel-shadow: #142020;
+  --bezel-highlight: #5a6a6a;
+  --metal-dark: #222a2a;
+  --screw-color: #2a3a3a;
+}
+
+/* Vault-Tec brand label */
+body.skin-vaulttec .bezel-label::before {
+  content: "VAULT-TEC ";
+}
+body.skin-vaulttec .bezel-label {
+  font-size: 0;  /* hide original text, use ::before only */
+  letter-spacing: 0;
+}
+body.skin-vaulttec .bezel-label::before {
+  font-size: 11px;
+  letter-spacing: 3px;
+  font-weight: bold;
+  color: var(--bezel-shadow);
+  text-shadow: 0 1px 0 var(--bezel-highlight);
+}
+
+/* Slightly different scanline density */
+body.skin-vaulttec .crt-scanlines {
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0) 0px,
+    rgba(0, 0, 0, 0) 3px,
+    rgba(0, 0, 0, 0.18) 3px,
+    rgba(0, 0, 0, 0.18) 4px
+  );
+}
+
+/* Subtle Vault-Tec blue tint to flicker */
+body.skin-vaulttec .crt-flicker {
+  background: rgba(92, 255, 193, 0.025);
+}

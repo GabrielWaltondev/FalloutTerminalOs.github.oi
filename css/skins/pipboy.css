@@ -1,0 +1,74 @@
+/* ============================================================
+   SKIN: PIP-BOY 3000
+   ============================================================ */
+
+body.skin-pipboy {
+  --term-green: #4ad15a;          /* iconic Pip-Boy green - more yellow/amber */
+  --term-green-dim: #2a7a30;
+  --term-green-bright: #7eff8a;
+  --term-bg: #0a1408;
+  --term-bg-deep: #050a04;
+  --bezel-color: #5a5340;         /* worn yellowish-tan plastic */
+  --bezel-shadow: #25201a;
+  --bezel-highlight: #7a7058;
+  --metal-dark: #2a2620;
+  --screw-color: #3a352a;
+}
+
+/* Pip-Boy is a smaller, more personal device */
+body.skin-pipboy #bezel {
+  max-width: 700px;       /* tighter than the desktop terminal */
+  border-radius: 28px;    /* rounder, like a wrist device's screen surround */
+}
+
+/* Different brand label */
+body.skin-pipboy .bezel-label {
+  font-size: 0;
+  letter-spacing: 0;
+}
+body.skin-pipboy .bezel-label::before {
+  content: "PIP-BOY 3000";
+  font-size: 11px;
+  letter-spacing: 3px;
+  font-weight: bold;
+  color: var(--bezel-shadow);
+  text-shadow: 0 1px 0 var(--bezel-highlight);
+}
+
+/* Denser scanlines - small CRT means scanlines are more visible */
+body.skin-pipboy .crt-scanlines {
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0) 0px,
+    rgba(0, 0, 0, 0) 1px,
+    rgba(0, 0, 0, 0.20) 1px,
+    rgba(0, 0, 0, 0.20) 2px
+  );
+}
+
+/* More pronounced vignette - small rounded screen */
+body.skin-pipboy .crt-vignette {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0) 50%,
+    rgba(0, 0, 0, 0.65) 100%
+  );
+}
+
+/* Slightly more flicker - older personal hardware */
+body.skin-pipboy .crt-flicker {
+  background: rgba(74, 209, 90, 0.04);
+  animation: pipboy-flicker 0.18s infinite;
+}
+
+@keyframes pipboy-flicker {
+  0%   { opacity: 0.4; }
+  30%  { opacity: 0.55; }
+  70%  { opacity: 0.45; }
+  100% { opacity: 0.4; }
+}
+
+/* Slightly different font weight feel */
+body.skin-pipboy .screen-content {
+  font-weight: bold;
+}
